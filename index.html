@@ -15,7 +15,78 @@
 
   <link rel="stylesheet" href="style.css">
 </head>
+<!-- HICHAM AUTO GALLERY -->
 <section class="gallery-section">
+
+  <div class="gallery-title">
+    <h2>My Gallery</h2>
+    <p>Latest photos</p>
+  </div>
+
+  <div id="auto-gallery" class="gallery-grid">
+    <p>Loading photos...</p>
+  </div>
+
+</section>
+
+<script>
+const GITHUB_USER = "lptigaming33-lgtm";
+const GITHUB_REPO = "hicham-modeling";
+const IMAGE_FOLDER = "images";
+
+async function loadGallery() {
+
+  const gallery = document.getElementById("auto-gallery");
+
+  try {
+
+    const response = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${IMAGE_FOLDER}`
+    );
+
+    if (!response.ok) {
+      throw new Error("GitHub API error");
+    }
+
+    const files = await response.json();
+
+    gallery.innerHTML = "";
+
+    const images = files.filter(file =>
+      /\.(jpg|jpeg|png|webp|gif)$/i.test(file.name)
+    );
+
+    images.forEach(file => {
+
+      const card = document.createElement("div");
+      card.className = "gallery-card";
+
+      const img = document.createElement("img");
+
+      img.src = file.download_url;
+      img.alt = "Hicham Modeling";
+      img.loading = "lazy";
+
+      card.appendChild(img);
+      gallery.appendChild(card);
+
+    });
+
+    if (images.length === 0) {
+      gallery.innerHTML = "<p>No photos yet.</p>";
+    }
+
+  } catch (error) {
+
+    console.error(error);
+    gallery.innerHTML = "<p>Unable to load gallery.</p>";
+
+  }
+
+}
+
+loadGallery();
+</script>
   <h2>My Gallery</h2>
 
   <div id="gallery" class="gallery">
